@@ -1,0 +1,23 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2008
+
+Project("{F0F40320-D639-C9DC-EE77-253B4E694935}") = "IntruderWorldMovement", "Assembly-CSharp.csproj", "{CC7A62A4-C273-8747-63E1-6E977B51491F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CC7A62A4-C273-8747-63E1-6E977B51491F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC7A62A4-C273-8747-63E1-6E977B51491F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC7A62A4-C273-8747-63E1-6E977B51491F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC7A62A4-C273-8747-63E1-6E977B51491F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Assembly-CSharp.csproj
+	EndGlobalSection
+EndGlobal
