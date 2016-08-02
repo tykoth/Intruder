@@ -7,13 +7,16 @@ public class World : MonoBehaviour {
 	public float titleOffSetTop = -0.0027567f;
 	public float titleOffSetLeft = 0.001498f;
 
-	public double Latitude = 55.4018502;
-	public double Longtitude = 10.3419367;
+	public double latitude = 55.4018502;
+	public double longtitude = 10.3419367;
 
+	public Grid worldGrid;
 
 
 	// Use this for initialization
 	void Start () {
+		worldGrid = new Grid(1, 50, latitude, longtitude);
+	/*	
 		var collection = new GameObject ("World Pieces");
 		collection.transform.position = new Vector3 (0, 0, 0);
 
@@ -22,28 +25,30 @@ public class World : MonoBehaviour {
 		ground.transform.position = new Vector3 (0, -0.5f, 0);
 		ground.name = "MiddlePiece";
 		ground.transform.parent = collection.transform;
-		StartCoroutine(addTextureToCube (ground, Latitude, Longtitude));
+		StartCoroutine(addTextureToCube (ground, latitude, longtitude));
+
+
 
 		var leftPiece = GameObject.CreatePrimitive (PrimitiveType.Cube);
 		leftPiece.transform.localScale = new Vector3 (50, 1, 50);
 		leftPiece.transform.position = new Vector3 (-50, -0.5f, 0);
 		leftPiece.name = "LeftPiece";
 		leftPiece.transform.parent = collection.transform;
-		StartCoroutine(addTextureToCube (leftPiece, Latitude, Longtitude - titleOffSetLeft));
+		StartCoroutine(addTextureToCube (leftPiece, latitude, longtitude - titleOffSetLeft));
 
 		var rightPiece = GameObject.CreatePrimitive (PrimitiveType.Cube);
 		rightPiece.transform.localScale = new Vector3 (50, 1, 50);
 		rightPiece.transform.position = new Vector3 (50, -0.5f, 0);
 		rightPiece.name = "RightPiece";
 		rightPiece.transform.parent = collection.transform;
-		StartCoroutine(addTextureToCube (rightPiece, Latitude, Longtitude + titleOffSetLeft));
+		StartCoroutine(addTextureToCube (rightPiece, latitude, longtitude + titleOffSetLeft));
 
 		var topPiece = GameObject.CreatePrimitive (PrimitiveType.Cube);
 		topPiece.transform.localScale = new Vector3 (50, 1, 50);
 		topPiece.transform.position = new Vector3 (0, -0.5f, 50);
 		topPiece.name = "TopPiece";
 		topPiece.transform.parent = collection.transform;
-		StartCoroutine(addTextureToCube (topPiece, Latitude + titleOffSetTop, Longtitude));
+		StartCoroutine(addTextureToCube (topPiece, latitude + titleOffSetTop, longtitude));
 
 
 		var topLeftPiece = GameObject.CreatePrimitive (PrimitiveType.Cube);
@@ -51,7 +56,7 @@ public class World : MonoBehaviour {
 		topLeftPiece.transform.position = new Vector3 (-50, -0.5f, 50);
 		topLeftPiece.name = "topLeftPiece";
 		topLeftPiece.transform.parent = collection.transform;
-		StartCoroutine(addTextureToCube (topLeftPiece, Latitude+titleOffSetTop, Longtitude - titleOffSetLeft));
+		StartCoroutine(addTextureToCube (topLeftPiece, latitude+titleOffSetTop, longtitude - titleOffSetLeft));
 
 
 
@@ -60,7 +65,7 @@ public class World : MonoBehaviour {
 		topRightPiece.transform.position = new Vector3 (50, -0.5f, 50);
 		topRightPiece.name = "topRightPiece";
 		topRightPiece.transform.parent = collection.transform;
-		StartCoroutine(addTextureToCube (topRightPiece, Latitude+titleOffSetTop, Longtitude + titleOffSetLeft));
+		StartCoroutine(addTextureToCube (topRightPiece, latitude+titleOffSetTop, longtitude + titleOffSetLeft));
 
 
 		var bottomPiece = GameObject.CreatePrimitive (PrimitiveType.Cube);
@@ -69,7 +74,7 @@ public class World : MonoBehaviour {
 		bottomPiece.name = "BottomPiece";
 		bottomPiece.transform.parent = collection.transform;
 		bottomPiece.transform.parent = collection.transform;
-		StartCoroutine(addTextureToCube (bottomPiece, Latitude - titleOffSetTop, Longtitude));
+		StartCoroutine(addTextureToCube (bottomPiece, latitude - titleOffSetTop, longtitude));
 
 
 		var bottomLeftPiece = GameObject.CreatePrimitive (PrimitiveType.Cube);
@@ -77,15 +82,14 @@ public class World : MonoBehaviour {
 		bottomLeftPiece.transform.position = new Vector3 (-50, -0.5f, -50);
 		bottomLeftPiece.name = "bottomLeftPiece";
 		bottomLeftPiece.transform.parent = collection.transform;
-		StartCoroutine(addTextureToCube (bottomLeftPiece, Latitude-titleOffSetTop, Longtitude - titleOffSetLeft));
+		StartCoroutine(addTextureToCube (bottomLeftPiece, latitude-titleOffSetTop, longtitude - titleOffSetLeft));
 
 		var bottomRightPiece = GameObject.CreatePrimitive (PrimitiveType.Cube);
 		bottomRightPiece.transform.localScale = new Vector3 (50, 1, 50);
 		bottomRightPiece.transform.position = new Vector3 (50, -0.5f, -50);
 		bottomRightPiece.name = "bottomRightPiece";
 		bottomRightPiece.transform.parent = collection.transform;
-		StartCoroutine(addTextureToCube (bottomRightPiece, Latitude-titleOffSetTop, Longtitude + titleOffSetLeft));
-	
+		StartCoroutine(addTextureToCube (bottomRightPiece, latitude-titleOffSetTop, longtitude + titleOffSetLeft));
 	}
 
 
@@ -101,8 +105,11 @@ public class World : MonoBehaviour {
 		rend.material.mainTexture = texture2D;
 		rend.material.mainTextureOffset = new Vector2 (0,0.04f);
 		rend.material.SetTextureScale("_MainTex", new Vector2(1, 0.96f));
+	*/
 	}
-	
+
+
+
 	// Update is called once per frame
 	void Update () {
 	
