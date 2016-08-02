@@ -7,14 +7,14 @@ public class Grid {
 	private int radius = 1;
 	private int gridBlockSize;
 
-	private static double _defaultgridBlockSize = 50;
-	private double _defautlTitleOffSetTop = -0.0027567f / _defaultgridBlockSize;
-	private double _defaultTitleOffSetLeft = 0.001498f / _defaultgridBlockSize;
+	private static double _defaultgridBlockSize = 50.0;
+	private double _defautlTitleOffSetTop = -0.0027567f;
+	private double _defaultTitleOffSetLeft = 0.001498f;
 
 	private double _defaultTexureUnit = 0.04f / _defaultgridBlockSize;
 
-	private float titleOffSetTop;
-	private float titleOffSetLeft;
+	private double titleOffSetTop;
+	private double titleOffSetLeft;
 
 	private float textureOffSet;
 	private float textureScale;
@@ -41,11 +41,14 @@ public class Grid {
 			gridRadius = gridRadius + 2;	
 		}
 
-		titleOffSetLeft = (float)(_defaultTitleOffSetLeft * gridBlockSize);
-		titleOffSetTop = (float)(_defautlTitleOffSetTop * gridBlockSize);
+		titleOffSetLeft = _defaultTitleOffSetLeft;
+		titleOffSetTop  = _defautlTitleOffSetTop;
 
 		textureOffSet = (float)(0f + (_defaultTexureUnit * gridBlockSize));
 		textureScale = (float)(1f - (_defaultTexureUnit * gridBlockSize));
+
+		Debug.Log("titleOffSetLeft : " + titleOffSetLeft.ToString("F9"));
+		Debug.Log("titleOffSetTop : " + titleOffSetTop.ToString("F9"));
 
 		int gridCountX = gridRadius + 1;
 		int gridCountY = gridRadius + 1;
