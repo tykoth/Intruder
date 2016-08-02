@@ -47,14 +47,10 @@ public class Grid {
 		textureOffSet = (float)(0f + (_defaultTexureUnit * gridBlockSize));
 		textureScale = (float)(1f - (_defaultTexureUnit * gridBlockSize));
 
-		Debug.Log("titleOffSetLeft : " + titleOffSetLeft.ToString("F9"));
-		Debug.Log("titleOffSetTop : " + titleOffSetTop.ToString("F9"));
-
 		int gridCountX = gridRadius + 1;
 		int gridCountY = gridRadius + 1;
 		int gridCenterRow = (gridCountY) / 2;
 
-		Debug.Log ("gridCenterRow : " + gridCenterRow);
 		Vector2 localGridPosition;
 		GridItem item;
 
@@ -64,13 +60,12 @@ public class Grid {
 		for (int indexX = 1; indexX < gridCountX; indexX++) {
 			for (int indexY = 1; indexY < gridCountY; indexY++) {
 				localGridPosition = new Vector2 (indexX, indexY);
-				Debug.Log ("((indexY - gridCenterRow): " + ((indexY - gridCenterRow)));
+				string info = ("Circle Info: " + ((indexX - gridCenterRow)) + "-" + ((indexY - gridCenterRow)) + " pos: " + localGridPosition.ToString());
 
 				double localLatitude = latitude - ((indexY - gridCenterRow) * titleOffSetLeft);
 				double localLongtitude = longtitude + ((indexX - gridCenterRow) * titleOffSetTop);
 	
-				Debug.Log ("Item[" + indexX + "x" + indexY + "]" + ",localLatitude : " + localLatitude.ToString ("F9") + ", localLongtitude: " + localLongtitude.ToString ("F9"));
-				item = new GridItem ("Item[" + indexX + "x" + indexY + "]", localLatitude, localLongtitude, gridBlockSize, localGridPosition, textureOffSet, textureScale, gridCountY, collection.transform);
+				item = new GridItem ("Item[" + indexX + "x" + indexY + "] - " + info , localLatitude, localLongtitude, gridBlockSize, localGridPosition, textureOffSet, textureScale, gridCountY, collection.transform);
 				item.Draw ();
 				localGrid.Add (localGridPosition, item);
 
@@ -138,8 +133,6 @@ public class Grid {
 			int x = (int)((gridPosition.x - centerRow) * blockSize);
 			int y = (int)((gridPosition.y - centerRow) * blockSize);
 
-			Debug.Log (x + "," + y + " CenterRow: " + centerRow + " , maxY: " + maxY);
-
 			position = new Vector3 (x, 0.5f, y);
 			Download ();
 		}
@@ -150,7 +143,7 @@ public class Grid {
 
 		public void Download () {
 			string url = getImageUrl ();
-			Debug.Log (url);
+			//Debug.Log (url);
 			WWW www = new WWW (url);
 			while (!www.isDone || www.error != null) {
 			}

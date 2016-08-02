@@ -15,7 +15,7 @@ public class World : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		worldGrid = new Grid( 1, 150, latitude, longtitude);
+		worldGrid = new Grid( 2, 150, latitude, longtitude);
 	}
 
 
