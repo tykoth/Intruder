@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 public class Grid {
 
-	private int radius = 1;
+	public int radius = 1;
 	private int gridBlockSize;
-
+	public int GridLength;
 	private static double _defaultgridBlockSize = 50.0;
 	private double _defautlTitleOffSetTop = -0.0027567f;
 	private double _defaultTitleOffSetLeft = 0.001498f;
@@ -24,6 +24,7 @@ public class Grid {
 
 	private Dictionary<Vector2, GridItem> localGrid = new Dictionary<Vector2, GridItem> ();
 	public GameObject collection;
+	public bool needsUpdate = true;
 
 	public Grid (int radius, int blockSize, double latitude, double longtitude) {
 		this.radius = radius;
@@ -34,6 +35,16 @@ public class Grid {
 		initializeGrid ();
 	}
 
+	public void Set( Dictionary<Vector2, GridItem> map) {
+		localGrid = map;
+	}
+
+	public GridItem Get(Vector2 position) {
+		if (localGrid.ContainsKey (position))
+			return localGrid [position];
+		else
+			return null;
+	}
 
 	void initializeGrid () {
 		int gridRadius = 1;
@@ -51,6 +62,8 @@ public class Grid {
 		int gridCountY = gridRadius + 1;
 		int gridCenterRow = (gridCountY) / 2;
 
+		GridLength = gridCountX -1;
+
 		Vector2 localGridPosition;
 		GridItem item;
 
@@ -60,19 +73,62 @@ public class Grid {
 		for (int indexX = 1; indexX < gridCountX; indexX++) {
 			for (int indexY = 1; indexY < gridCountY; indexY++) {
 				localGridPosition = new Vector2 (indexX, indexY);
-				string info = ("Circle Info: " + ((indexX - gridCenterRow)) + "-" + ((indexY - gridCenterRow)) + " pos: " + localGridPosition.ToString());
+				string info = " pos: " + localGridPosition.ToString();
 
 				double localLatitude = latitude - ((indexY - gridCenterRow) * titleOffSetLeft);
 				double localLongtitude = longtitude + ((indexX - gridCenterRow) * titleOffSetTop);
 	
 				item = new GridItem ("Item[" + indexX + "x" + indexY + "] - " + info , localLatitude, localLongtitude, gridBlockSize, localGridPosition, textureOffSet, textureScale, gridCountY, collection.transform);
-				item.Draw ();
 				localGrid.Add (localGridPosition, item);
 
 			}	
 		}
+	}
 
+	public List<GridItem> GetRenderQueue() {
+		List<Vector2> itemsProcessed = new List<Vector2> ();
+		List<Grid.GridItem> itemsToRender = new List<Grid.GridItem> ();
 
+		int maxRows = GridLength;
+		int ring = 0;
+		GridItem item;
+		while (ring < maxRows) {
+			ring++;
+			for (int index = ring; index < maxRows+1; index++) {				
+				item = Get (new Vector2 (ring, index)); 
+				if (item != null && !itemsProcessed.Contains(new Vector2 (ring, index))) { 
+					//Debug.Log ("Getting " + new Vector2 (ring, index));
+					itemsProcessed.Add (new Vector2 (ring, index));
+					itemsToRender.Add (item);
+				}
+
+				item = Get (new Vector2 (index, ring)); 
+				if (item != null && !itemsProcessed.Contains(new Vector2 (index, ring))) { 
+					//Debug.Log ("Getting " + new Vector2 (index, ring));
+					itemsProcessed.Add (new Vector2 (index, ring));
+					itemsToRender.Add (item);
+				}
+			}
+			for (int index = maxRows; index > ring; index--) {				
+				item = Get (new Vector2 (maxRows, index)); 
+				if (item != null && !itemsProcessed.Contains(new Vector2 (maxRows, index))) { 
+					//Debug.Log ("Getting " + new Vector2 (maxRows, index));
+					itemsProcessed.Add (new Vector2 (maxRows, index));					
+					itemsToRender.Add (item);
+				}
+
+				item = Get (new Vector2 (index, maxRows)); 
+				if (item != null && !itemsProcessed.Contains(new Vector2 (index, maxRows))) { 
+					//Debug.Log ("Getting " + new Vector2 (maxRows, index));
+					itemsProcessed.Add (new Vector2 (index, maxRows));					
+					itemsToRender.Add (item);
+				}
+			}
+			maxRows--;
+		}
+
+		itemsToRender.Reverse ();
+		return itemsToRender;
 	}
 
 	public class GridItem {
@@ -87,6 +143,7 @@ public class Grid {
 		public Vector2 localPosition;
 		public Vector2 localScale;
 		public Vector2 gridPosition;
+		public GameObject obj;
 
 		private int blockSize;
 		private int maxY;
@@ -109,19 +166,11 @@ public class Grid {
 		}
 
 		public GameObject Draw () {
-			GameObject obj = GameObject.CreatePrimitive (PrimitiveType.Cube);
-
-			Renderer rend;
-			rend = obj.GetComponent<Renderer> ();
-
+			obj = GameObject.CreatePrimitive (PrimitiveType.Cube);
 			obj.transform.localScale = new Vector3 (blockSize, 1, blockSize);
 			obj.transform.position = position;
 			obj.name = name;
 			obj.transform.parent = this.parent;
-
-			rend.material.mainTexture = texture2D;
-			rend.material.mainTextureOffset = localPosition;
-			rend.material.SetTextureScale ("_MainTex", localScale);
 			return obj;
 		}
 
@@ -134,20 +183,26 @@ public class Grid {
 			int y = (int)((gridPosition.y - centerRow) * blockSize);
 
 			position = new Vector3 (x, 0.5f, y);
-			Download ();
+			Draw ();
 		}
 
 		public string getImageUrl () {
 			return "http://maps.googleapis.com/maps/api/staticmap?center=" + latitude.ToString ("F9") + "," + longtitude.ToString ("F9") + "&zoom=18&size=512x512&scale=2&maptype=roadmap";
 		}
 
-		public void Download () {
+		public IEnumerator Download () {
 			string url = getImageUrl ();
 			//Debug.Log (url);
 			WWW www = new WWW (url);
-			while (!www.isDone || www.error != null) {
-			}
+			yield return www;
 			www.LoadImageIntoTexture (texture2D);
+
+			Renderer rend;
+			rend = obj.GetComponent<Renderer> ();
+
+			rend.material.mainTexture = texture2D;
+			rend.material.mainTextureOffset = localPosition;
+			rend.material.SetTextureScale ("_MainTex", localScale);
 		}
 
 	}
