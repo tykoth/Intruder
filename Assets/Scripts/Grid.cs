@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 
 public class Grid {
 
@@ -25,6 +26,8 @@ public class Grid {
 	private Dictionary<Vector2, GridItem> localGrid = new Dictionary<Vector2, GridItem> ();
 	public GameObject collection;
 	public bool needsUpdate = true;
+
+	public static string localStorageDirectory = Application.persistentDataPath + Path.DirectorySeparatorChar + "maps";
 
 	public Grid (int radius, int blockSize, double latitude, double longtitude) {
 		this.radius = radius;
@@ -83,6 +86,12 @@ public class Grid {
 
 			}	
 		}
+
+		if(!Directory.Exists(Grid.localStorageDirectory)) {
+			Debug.Log("Creating storage at " + localStorageDirectory);
+			Directory.CreateDirectory(localStorageDirectory);
+		}
+
 	}
 
 	public List<GridItem> GetRenderQueue() {
@@ -148,6 +157,7 @@ public class Grid {
 		private int blockSize;
 		private int maxY;
 		private int centerRow;
+		private bool mapLoaded = false;
 
 		private Transform parent;
 
@@ -171,7 +181,23 @@ public class Grid {
 			obj.transform.position = position;
 			obj.name = name;
 			obj.transform.parent = this.parent;
+			TryImageFromCache();
 			return obj;
+		}
+
+
+		public void TryImageFromCache() {
+			if (File.Exists(Grid.localStorageDirectory + Path.DirectorySeparatorChar + "block." + latitude.ToString ("F9") + "-" + longtitude.ToString ("F9") + ".png")) {
+				Debug.Log(latitude.ToString ("F9") + "-" + longtitude.ToString ("F9") + " loaded from cache");
+				texture2D.LoadImage(File.ReadAllBytes(Grid.localStorageDirectory + Path.DirectorySeparatorChar + "block." + latitude.ToString ("F9") + "-" + longtitude.ToString ("F9") + ".png"));	
+				Renderer rend;
+				rend = obj.GetComponent<Renderer> ();
+
+				rend.material.mainTexture = texture2D;
+				rend.material.mainTextureOffset = localPosition;
+				rend.material.SetTextureScale ("_MainTex", localScale);
+				mapLoaded = true;
+			}	
 		}
 
 		void initializeGridItem () {
@@ -191,18 +217,22 @@ public class Grid {
 		}
 
 		public IEnumerator Download () {
-			string url = getImageUrl ();
-			//Debug.Log (url);
-			WWW www = new WWW (url);
-			yield return www;
-			www.LoadImageIntoTexture (texture2D);
+			if (!mapLoaded) {
+				string url = getImageUrl ();
+				//Debug.Log (url);
+				WWW www = new WWW (url);
+				yield return www;
+				www.LoadImageIntoTexture (texture2D);
+				File.WriteAllBytes(Grid.localStorageDirectory + Path.DirectorySeparatorChar + "block." + latitude.ToString ("F9") + "-" + longtitude.ToString ("F9") + ".png"  ,www.bytes);
+				Debug.Log("Writing file \n" + Grid.localStorageDirectory + Path.DirectorySeparatorChar + "block." + latitude.ToString ("F9") + "-" + longtitude.ToString ("F9") + ".png"); 
+				Renderer rend;
+				rend = obj.GetComponent<Renderer> ();
 
-			Renderer rend;
-			rend = obj.GetComponent<Renderer> ();
-
-			rend.material.mainTexture = texture2D;
-			rend.material.mainTextureOffset = localPosition;
-			rend.material.SetTextureScale ("_MainTex", localScale);
+				rend.material.mainTexture = texture2D;
+				rend.material.mainTextureOffset = localPosition;
+				rend.material.SetTextureScale ("_MainTex", localScale);
+				mapLoaded = true;
+			}
 		}
 
 	}

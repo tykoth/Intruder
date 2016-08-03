@@ -24,8 +24,8 @@ public class World : MonoBehaviour {
 		if (worldGrid.needsUpdate) {
 			List<Grid.GridItem> itemsToRender = worldGrid.GetRenderQueue ();	
 			for(int index=0; index < itemsToRender.Count; index++) {
-				Debug.Log ("Rendering " + itemsToRender [index].getImageUrl());
-				//StartCoroutine_Auto (itemsToRender[index].Download ());
+				//Debug.Log ("Rendering " + itemsToRender [index].getImageUrl());
+				StartCoroutine_Auto (itemsToRender[index].Download ());
 			}
 			worldGrid.needsUpdate = false;
 		}
